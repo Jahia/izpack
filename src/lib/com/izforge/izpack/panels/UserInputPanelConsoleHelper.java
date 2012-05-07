@@ -460,7 +460,7 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
                 value = !strIn.trim().equals("") ? strIn : set;
                 if (input.validators != null && !input.validators.isEmpty())
                 {
-                    StringInputProcessingClient validation = new StringInputProcessingClient(value, input.validators);
+                    StringInputProcessingClient validation = new StringInputProcessingClient(idata, value, input.validators);
                     if (!validation.validate()) {
                         done = false;
                         System.out.println("Validation failed, please verify your input.");

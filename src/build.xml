@@ -207,7 +207,7 @@
 
     <property file="src/ant.properties"/>
     <property name="ver" value="4.3"/>
-    <property name="rel" value="4"/>
+    <property name="rel" value="5"/>
     <property name="build.number" value="${ver}.${rel}"/>
 
     <property name="src.dir" value="${basedir}/src/lib"/>
@@ -283,7 +283,8 @@
                target="${compat.target}"
                deprecation="on"
                debug="${debug}"
-               debuglevel="${debuglevel}">
+               debuglevel="${debuglevel}"
+        	verbose="true">
             <include name="com/izforge/izpack/*.java"/>
             <include name="com/izforge/izpack/io/*.java"/>
             <include name="com/izforge/izpack/compiler/*.java"/>
@@ -395,6 +396,7 @@
             <include name="com/izforge/izpack/panels/HelpWindow.java" />
             <include name="com/izforge/izpack/adaptator/**/*.java"/>
             <include name="com/izforge/izpack/adaptator/*.java"/>
+        	<include name="com/izforge/izpack/panels/StringInputProcessingClient.java" />
         </javac>
     </target>
 

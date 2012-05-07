@@ -197,7 +197,7 @@ public class FileInputField extends JPanel implements ActionListener
             }
             else
             {
-                StringInputProcessingClient processingClient = new StringInputProcessingClient(
+                StringInputProcessingClient processingClient = new StringInputProcessingClient(data,
                         input, validators);
                 boolean success = processingClient.validate();
                 if (!success)
