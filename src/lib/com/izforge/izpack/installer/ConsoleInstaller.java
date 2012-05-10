@@ -23,7 +23,9 @@ package com.izforge.izpack.installer;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import com.izforge.izpack.LocaleDatabase;
@@ -123,6 +125,9 @@ public class ConsoleInstaller extends InstallerBase
                     Debug.log("ClassNotFoundException-skip :" + consoleHelperClassName);
                     continue;
                 }
+                
+                executePreConstructActions(p);
+                
                 PanelConsole consoleHelperInstance = null;
                 if (consoleHelperClass != null)
                 {
@@ -155,13 +160,19 @@ public class ConsoleInstaller extends InstallerBase
                                     strCondition);
                         }
 
+                        executePreActivateActions(p);
+                        
                         if (strAction.equals("doInstall") && bIsConditionFulfilled)
                         {
+                            boolean valid = true;
                             do
                             {
                                 bActionResult = consoleHelperInstance.runConsole(this.installdata);
+                                executePreValidateActions(p);
+                                valid = validatePanel(p);
+                                executePostValidateActions(p);
                             }
-                            while (!validatePanel(p));
+                            while (!valid);
                         }
                         else if (strAction.equals("doGeneratePropertiesFile"))
                         {
@@ -319,6 +330,74 @@ public class ConsoleInstaller extends InstallerBase
                 
             default:
                 doInstall();
+        }
+    }
+
+    private List<PanelAction> createPanelActionsFromStringList(Panel panel, List<String> actions)
+    {
+        List<PanelAction> actionList = null;
+        if (actions != null)
+        {
+            actionList = new ArrayList<PanelAction>();
+            for (String actionClassName : actions)
+            {
+                PanelAction action = PanelActionFactory.createPanelAction(actionClassName);
+                action.initialize(panel.getPanelActionConfiguration(actionClassName));
+                actionList.add(action);
+            }
+        }
+        return actionList;
+    }
+
+    private void executePreConstructActions(Panel panel)
+    {
+        List<PanelAction> preConstructActions = createPanelActionsFromStringList(panel, panel
+                .getPreConstructionActions());
+        if (preConstructActions != null)
+        {
+            for (PanelAction preConstructAction : preConstructActions)
+            {
+                preConstructAction.executeAction(installdata, null);
+            }
+        }
+    }
+
+    private void executePreActivateActions(Panel panel)
+    {
+        List<PanelAction> preActivateActions = createPanelActionsFromStringList(panel, panel
+                .getPreActivationActions());
+        if (preActivateActions != null)
+        {
+            for (PanelAction preActivateAction : preActivateActions)
+            {
+                preActivateAction.executeAction(installdata, null);
+            }
+        }
+    }
+
+    private void executePreValidateActions(Panel panel)
+    {
+        List<PanelAction> preValidateActions = createPanelActionsFromStringList(panel, panel
+                .getPreValidationActions());
+        if (preValidateActions != null)
+        {
+            for (PanelAction preValidateAction : preValidateActions)
+            {
+                preValidateAction.executeAction(installdata, null);
+            }
+        }
+    }
+
+    private void executePostValidateActions(Panel panel)
+    {
+        List<PanelAction> postValidateActions = createPanelActionsFromStringList(panel, panel
+                .getPostValidationActions());
+        if (postValidateActions != null)
+        {
+            for (PanelAction postValidateAction : postValidateActions)
+            {
+                postValidateAction.executeAction(installdata, null);
+            }
         }
     }
 }
