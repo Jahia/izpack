@@ -815,6 +815,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
         if ((variable == null) || (variable.length() == 0)) { return; }
 
         boolean allowEmptyValue = false;
+        boolean mustExist = true;
 
         IXMLElement element = field.getFirstChildNamed(SPEC);
         if (element == null)
@@ -871,6 +872,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
 
             allowEmptyValue = Boolean
                     .parseBoolean(element.getAttribute("allowEmptyValue", "false"));
+            mustExist = Boolean.parseBoolean(element.getAttribute("mustExist", "true"));
         }
 
         List<ValidatorContainer> validatorConfig = analyzeValidator(field);
@@ -893,6 +895,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
                 validatorConfig, filter, filterdesc);
 
         fileInputField.setAllowEmptyInput(allowEmptyValue);
+        fileInputField.setMustExist(mustExist);
 
         UIElement fileUiElement = new UIElement();
         fileUiElement.setType(UIElementType.FILE);
@@ -1078,7 +1081,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
         }
 
         buildUI();
-
+        
         this.setSize(this.getMaximumSize().width, this.getMaximumSize().height);
         validate();
         if (packsDefined)

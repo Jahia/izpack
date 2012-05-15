@@ -64,6 +64,8 @@ public class FileInputField extends JPanel implements ActionListener
 
     boolean allowEmpty;
     
+    boolean mustExist;
+
     protected static final int INVALID = 0, EMPTY = 1; 
 
     public FileInputField(IzPanel parent, InstallData data, boolean directory, String set,
@@ -220,7 +222,7 @@ public class FileInputField extends JPanel implements ActionListener
 
     protected boolean _validate(File file)
     {
-        return file.isFile();
+        return !mustExist || file.isFile();
     }
 
     public boolean isAllowEmptyInput()
@@ -231,5 +233,11 @@ public class FileInputField extends JPanel implements ActionListener
     public void setAllowEmptyInput(boolean allowEmpty)
     {
         this.allowEmpty = allowEmpty;
+    }
+
+    
+    public void setMustExist(boolean mustExist)
+    {
+        this.mustExist = mustExist;
     }
 }
