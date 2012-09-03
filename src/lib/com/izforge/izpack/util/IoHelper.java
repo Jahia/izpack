@@ -716,4 +716,32 @@ public class IoHelper
         envVars.setProperty(key, var.substring(index + 1));
 
     }
+    
+    public static boolean isWriteable(File path)
+    {
+        File existParent = IoHelper.existingParent(path);
+        if (existParent == null)
+        {
+            return false;
+        }
+        // On windows we cannot use canWrite because
+        // it looks to the dos flags which are not valid
+        // on NT or 2k XP or ...
+        if (OsVersion.IS_WINDOWS)
+        {
+            File tmpFile;
+            try
+            {
+                tmpFile = File.createTempFile("izWrTe", ".tmp", existParent);
+                tmpFile.deleteOnExit();
+            }
+            catch (IOException e)
+            {
+                Debug.trace(e.toString());
+                return false;
+            }
+            return true;
+        }
+        return existParent.canWrite();
+    }
 }

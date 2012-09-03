@@ -31,6 +31,7 @@ import com.izforge.izpack.installer.AutomatedInstallData;
 import com.izforge.izpack.installer.PanelConsole;
 import com.izforge.izpack.installer.PanelConsoleHelper;
 import com.izforge.izpack.installer.ScriptParser;
+import com.izforge.izpack.util.IoHelper;
 import com.izforge.izpack.util.VariableSubstitutor;
 /**
  * The Target panel console helper class.
@@ -115,6 +116,12 @@ public class TargetPanelConsoleHelper extends PanelConsoleHelper implements Pane
                 {
                     return runConsole(idata);
                 }
+            }
+            
+            if (!IoHelper.isWriteable(selectedDir))
+            {
+                System.out.println("Error: the directory " + selectedDir.getPath()
+                        + " can not be written! Please choose another directory!");
             }
         }
         

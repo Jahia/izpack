@@ -427,30 +427,7 @@ public class PathInputPanel extends IzPanel implements ActionListener
      */
     public boolean isWriteable()
     {
-        File existParent = IoHelper.existingParent(new File(pathSelectionPanel.getPath()));
-        if (existParent == null)
-        {
-            return false;
-        }
-        // On windows we cannot use canWrite because
-        // it looks to the dos flags which are not valid
-        // on NT or 2k XP or ...
-        if (OsVersion.IS_WINDOWS)
-        {
-            File tmpFile;
-            try
-            {
-                tmpFile = File.createTempFile("izWrTe", ".tmp", existParent);
-                tmpFile.deleteOnExit();
-            }
-            catch (IOException e)
-            {
-                Debug.trace(e.toString());
-                return false;
-            }
-            return true;
-        }
-        return existParent.canWrite();
+        return IoHelper.isWriteable(new File(pathSelectionPanel.getPath()));
     }
 
     /**
