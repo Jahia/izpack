@@ -122,6 +122,7 @@ public class TargetPanelConsoleHelper extends PanelConsoleHelper implements Pane
             {
                 System.out.println("Error: the directory " + selectedDir.getPath()
                         + " can not be written! Please choose another directory!");
+                return runConsole(idata);
             }
         }
         
