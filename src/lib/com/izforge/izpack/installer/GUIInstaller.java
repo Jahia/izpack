@@ -539,7 +539,29 @@ public class GUIInstaller extends InstallerBase
         // Nimbus (http://nimbus.dev.java.net/)
         if ("nimbus".equals(laf))
         {
-            UIManager.setLookAndFeel("org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeel");
+//            UIManager.setLookAndFeel("org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeel");
+            // Nimbus was included in JDK 6u10 but the packaging changed in JDK 7. Iterate to locate it
+            // See http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/nimbus.html for more details
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
+                    UIManager.setLookAndFeel(info.getClassName());
+
+                    Map<String, String> params = installdata.guiPrefs.lookAndFeelParams.get(laf);
+                    if (params != null)
+                    {
+                        for (Map.Entry<String, String> p : params.entrySet())
+                        {
+                            UIManager.put(
+                                    p.getKey(),
+                                    p.getValue().startsWith("0x") ? Color.decode(p.getValue()) : p
+                                            .getValue());
+                        }
+                    }
+                    break;
+                }
+            }
             return;
         }
 

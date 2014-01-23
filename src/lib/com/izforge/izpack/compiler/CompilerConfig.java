@@ -476,7 +476,7 @@ public class CompilerConfig extends Thread {
             lafMap.put("metouia", "metouia.jar");
             lafMap.put("looks", "looks.jar");
             lafMap.put("substance", "substance.jar");
-            lafMap.put("nimbus", "nimbus.jar");
+            //lafMap.put("nimbus", "nimbus.jar");
 
             // is this really what we want? a double loop? needed, since above,
             // it's
@@ -487,6 +487,9 @@ public class CompilerConfig extends Thread {
             while (kit.hasNext())
             {
                 String lafName = prefs.lookAndFeelMapping.get(kit.next());
+                if ("nimbus".equals(lafName)) {
+                    continue;
+                }
                 String lafJarName = lafMap.get(lafName);
                 if (lafJarName == null)
                 {
