@@ -1951,8 +1951,14 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
                     String choiceValues = "";
                     try
                     {
-                        choiceValues = ((Processor) Class.forName(processorClass).newInstance())
-                                .process(null);
+                        Processor choiceProcessor = (Processor) Class.forName(processorClass)
+                                .newInstance();
+                        if (choiceProcessor instanceof Processor.AutomatedInstallDataAware)
+                        {
+                            ((Processor.AutomatedInstallDataAware) choiceProcessor)
+                                    .setAutomatedInstallData(idata);
+                        }
+                        choiceValues = choiceProcessor.process(null);
                     }
                     catch (Throwable t)
                     {
@@ -1974,9 +1980,18 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
                     while (tokenizer.hasMoreTokens())
                     {
                         String token = tokenizer.nextToken();
-                        listItem = new TextValuePair(token, token);
+                        int splitter = token.indexOf('|');
+                        String text = token;
+                        String value = token;
+                        if (splitter != -1)
+                        {
+                            value = token.substring(0, splitter);
+                            text = token.length() > (splitter + 1) ? token.substring(splitter + 1)
+                                    : "";
+                        }
+                        listItem = new TextValuePair(text, value);
                         field.addItem(listItem);
-                        if (set.equals(token))
+                        if (set.equals(value))
                         {
                             field.setSelectedIndex(field.getItemCount() - 1);
                         }

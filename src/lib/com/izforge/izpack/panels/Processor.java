@@ -21,6 +21,8 @@
 
 package com.izforge.izpack.panels;
 
+import com.izforge.izpack.installer.AutomatedInstallData;
+
 /*---------------------------------------------------------------------------*/
 /**
  * Interface for classes that provide input field processing services.
@@ -32,6 +34,15 @@ package com.izforge.izpack.panels;
 /*---------------------------------------------------------------------------*/
 public interface Processor
 {
+    /**
+     * Interface for injecting {@link AutomatedInstallData}.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public interface AutomatedInstallDataAware
+    {
+        void setAutomatedInstallData(AutomatedInstallData idata);
+    }
 
     /*--------------------------------------------------------------------------*/
     /**
