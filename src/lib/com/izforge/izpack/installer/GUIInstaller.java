@@ -32,6 +32,7 @@ import com.izforge.izpack.util.VariableSubstitutor;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.MetalTheme;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -895,20 +896,31 @@ public class GUIInstaller extends InstallerBase
             if (testFont == null)
             // Return the language name in the spelling of the default locale.
             {
-                return (locale.getDisplayLanguage());
+                return capitalize((locale.getDisplayLanguage()));
             }
             // Get the language name in the spelling of that language.
-            String str = locale.getDisplayLanguage(locale);
+            String str = capitalize(locale.getDisplayLanguage(locale));
             int cdut = testFont.canDisplayUpTo(str);
             if (cdut > -1)
             // Test font cannot render it;
             // use language name in the spelling of the default locale.
             {
-                str = locale.getDisplayLanguage();
+                str = capitalize(locale.getDisplayLanguage());
             }
             return (str);
         }
-
+        
+        private String capitalize(String str) {
+            int strLen;
+            if (str == null || (strLen = str.length()) == 0) {
+                return str;
+            }
+            return new StringBuffer(strLen)
+                .append(Character.toTitleCase(str.charAt(0)))
+                .append(str.substring(1))
+                .toString();
+        }
+        
         /**
          * Loads an image.
          *
