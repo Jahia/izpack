@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import com.izforge.izpack.LocaleDatabase;
@@ -68,6 +69,8 @@ public class ConsoleInstaller extends InstallerBase
                 "/langpacks/" + this.installdata.localeISO3 + ".xml");
         this.installdata.langpack = new LocaleDatabase(in);
         this.installdata.setVariable(ScriptParser.ISO3_LANG, this.installdata.localeISO3);
+        this.installdata.locale = new Locale(GUIInstaller.LANG_CODES_MAP.get(this.installdata.localeISO3));
+        this.installdata.setVariable(ScriptParser.LOCALE, this.installdata.locale.toString());
         ResourceManager.create(this.installdata);
         loadConditions(installdata);
         loadInstallerRequirements();

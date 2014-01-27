@@ -86,10 +86,12 @@ public class AutomatedInstaller extends InstallerBase
 
         // Loads the langpack
         this.idata.localeISO3 = this.idata.xmlData.getAttribute("langpack", "eng");
+        this.idata.locale = new Locale(GUIInstaller.LANG_CODES_MAP.get(this.idata.localeISO3)); 
         InputStream in = getClass().getResourceAsStream(
                 "/langpacks/" + this.idata.localeISO3 + ".xml");
         this.idata.langpack = new LocaleDatabase(in);
         this.idata.setVariable(ScriptParser.ISO3_LANG, this.idata.localeISO3);
+        this.idata.setVariable(ScriptParser.LOCALE, this.idata.locale.toString());
 
         // create the resource manager singleton
         ResourceManager.create(this.idata);

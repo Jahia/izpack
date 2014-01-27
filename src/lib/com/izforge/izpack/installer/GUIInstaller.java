@@ -75,6 +75,17 @@ public class GUIInstaller extends InstallerBase
             {"nor", "no"}, {"pol", "pl"}, {"por", "pt"}, {"rom", "or"}, {"rus", "ru"},
             {"spa", "es"}, {"svk", "sk"}, {"swe", "sv"}, {"tur", "tr"}, {"ukr", "uk"}};
 
+    public static final Map<String, String> LANG_CODES_MAP;
+    
+    static
+    {
+        LANG_CODES_MAP = new HashMap<String, String>(LANG_CODES.length);
+        for (int i = 0; i < LANG_CODES.length; ++i)
+        {
+            LANG_CODES_MAP.put(LANG_CODES[i][0], LANG_CODES[i][1]);
+        }
+    }
+    
     /**
      * holds language to ISO-3 language code translation
      */
@@ -393,6 +404,8 @@ public class GUIInstaller extends InstallerBase
         // We load the langpack
         installdata.localeISO3 = selectedPack;
         installdata.setVariable(ScriptParser.ISO3_LANG, installdata.localeISO3);
+        installdata.locale = new Locale(GUIInstaller.LANG_CODES_MAP.get(installdata.localeISO3)); 
+        installdata.setVariable(ScriptParser.LOCALE, installdata.locale.toString());
         InputStream in = getClass().getResourceAsStream("/langpacks/" + selectedPack + ".xml");
         this.installdata.langpack = new LocaleDatabase(in);
 
@@ -850,10 +863,7 @@ public class GUIInstaller extends InstallerBase
             { // Loasd predefined langs into HashMap.
                 iso3Toiso2 = new HashMap<String, String>(32);
                 isoTable = new HashMap();
-                for (i = 0; i < LANG_CODES.length; ++i)
-                {
-                    iso3Toiso2.put(LANG_CODES[i][0], LANG_CODES[i][1]);
-                }
+                iso3Toiso2.putAll(LANG_CODES_MAP);
             }
             for (i = 0; i < items.length; i++)
             {
