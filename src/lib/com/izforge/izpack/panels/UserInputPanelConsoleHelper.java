@@ -794,6 +794,7 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
             if (spec != null)
             {
                 choices = spec.getChildrenNamed(CHOICE);
+                strFieldText = spec.getAttribute(TEXT);
             }
             if (description != null)
             {
@@ -810,8 +811,13 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
                     String choiceValues = "";
                     try
                     {
-                        choiceValues = ((Processor) Class.forName(processorClass).newInstance())
-                                .process(null);
+                        Processor choiceProcessor = (Processor) Class.forName(processorClass).newInstance(); 
+                        if (choiceProcessor instanceof Processor.AutomatedInstallDataAware)
+                        {
+                            ((Processor.AutomatedInstallDataAware) choiceProcessor)
+                                    .setAutomatedInstallData(idata);
+                        }
+                        choiceValues = choiceProcessor.process(null);
                     }
                     catch (Throwable t)
                     {
@@ -833,15 +839,23 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
                     while (tokenizer.hasMoreTokens())
                     {
                         String token = tokenizer.nextToken();
+                        int splitter = token.indexOf('|');
+                        String text = token;
+                        String value = token;
+                        if (splitter != -1)
+                        {
+                            value = token.substring(0, splitter);
+                            text = token.length() > (splitter + 1) ? token.substring(splitter + 1)
+                                    : "";
+                        }
                         String choiceSet = null;
-                        if (token.equals(set) 
-                                ) {
+                        if (value.equals(set)) {
                             choiceSet="true";
                             selection=counter;
                         }
                         choicesList.add(new Choice(
-                                    token, 
-                                    token,
+                                    text, 
+                                    value,
                                     choiceSet));
                         counter++;
                         
