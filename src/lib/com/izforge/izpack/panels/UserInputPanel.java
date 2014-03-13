@@ -29,6 +29,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -58,6 +60,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
@@ -2163,7 +2166,8 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
         // get the description and add it to the list of UI
         // elements if it exists.
         // ----------------------------------------------------
-        element = spec.getFirstChildNamed(DESCRIPTION);
+        Vector<IXMLElement> childrenNamed = spec.getChildrenNamed(DESCRIPTION);
+        element = childrenNamed.size() > 0 ? childrenNamed.get(0) : null;
         addDescription(element, forPacks, forOs);
 
         // ----------------------------------------------------
@@ -2171,6 +2175,8 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
         // ----------------------------------------------------
         element = spec.getFirstChildNamed(SPEC);
 
+        TwoColumnConstraints descConstraints = null;
+        
         if (element != null)
         {
             Vector<IXMLElement> choices = element.getChildrenNamed(RADIO_CHOICE);
@@ -2182,7 +2188,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
             // --------------------------------------------------
             for (int i = 0; i < choices.size(); i++)
             {
-                JRadioButton choice = new JRadioButton();
+                final JRadioButton choice = new JRadioButton();
                 choice.setText(getText(choices.elementAt(i)));
                 String causesValidataion = (choices.elementAt(i)).getAttribute(REVALIDATE);
                 if (causesValidataion != null && causesValidataion.equals("yes"))
@@ -2237,6 +2243,28 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
                     ImageIcon icon = getImage(choiceDescr);
                     UIElement descUiElement = new UIElement();
                     JLabel label = new JLabel(getText(choiceDescr), icon, SwingConstants.LEADING);
+                    LineBorder lineBoder = new LineBorder(Color.WHITE, 0);
+                    label.setBorder(BorderFactory.createCompoundBorder(lineBoder, BorderFactory.createEmptyBorder(0,20,0,0)));
+                    label.addMouseListener(new MouseListener() {
+                        public void mouseReleased(MouseEvent e)
+                        {
+                        }
+                        public void mousePressed(MouseEvent e)
+                        {
+                        }
+                        public void mouseExited(MouseEvent e)
+                        {
+                        }
+                        
+                        public void mouseEntered(MouseEvent e)
+                        {
+                        }
+                        
+                        public void mouseClicked(MouseEvent e)
+                        {
+                            choice.doClick();
+                        }
+                    });
                     descUiElement.setType(UIElementType.DESCRIPTION);
                     descUiElement.setConstraints(constraints);
                     descUiElement.setComponent(label);
@@ -3022,13 +3050,13 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
     private void addDescription(IXMLElement spec, Vector<IXMLElement> forPacks,
             Vector<IXMLElement> forOs)
     {
-        String description;
-        TwoColumnConstraints constraints = new TwoColumnConstraints();
-        constraints.position = TwoColumnConstraints.BOTH;
-        constraints.stretch = true;
-
         if (spec != null)
         {
+            String description;
+            TwoColumnConstraints constraints = new TwoColumnConstraints();
+            constraints.position = TwoColumnConstraints.BOTH;
+            constraints.stretch = true;
+
             description = getText(spec);
 
             // if we have a description, add it to the UI elements
@@ -4058,7 +4086,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
         ImageIcon ico = null;
         if (element != null)
         {
-            String key = element.getAttribute("img");
+            String key = element.getAttribute(ICON_KEY);
             if (key != null)
             {
                 URL resource = GUIInstaller.class.getResource("/res/" + key);
