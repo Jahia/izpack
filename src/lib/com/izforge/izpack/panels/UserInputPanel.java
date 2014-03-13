@@ -31,6 +31,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -2229,6 +2231,19 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
 
                 // uiElements.add(new Object[] { null, RADIO_FIELD, variable, constraints, choice,
                 // forPacks, forOs, value, null, null, group});
+                
+                IXMLElement choiceDescr = choices.elementAt(i).getFirstChildNamed(DESCRIPTION);
+                if (choiceDescr != null) {
+                    ImageIcon icon = getImage(choiceDescr);
+                    UIElement descUiElement = new UIElement();
+                    JLabel label = new JLabel(getText(choiceDescr), icon, SwingConstants.LEADING);
+                    descUiElement.setType(UIElementType.DESCRIPTION);
+                    descUiElement.setConstraints(constraints);
+                    descUiElement.setComponent(label);
+                    descUiElement.setForPacks(forPacks);
+                    descUiElement.setForOs(forOs);
+                    elements.add(descUiElement);
+                }
             }
         }
     }
@@ -4038,6 +4053,25 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
         updateDialog();
     }
 
+    private ImageIcon getImage(IXMLElement element)
+    {
+        ImageIcon ico = null;
+        if (element != null)
+        {
+            String key = element.getAttribute("img");
+            if (key != null)
+            {
+                URL resource = GUIInstaller.class.getResource("/res/" + key);
+                if (resource != null)
+                {
+                    ico = new ImageIcon(resource);
+                }
+            }
+
+        }
+        return ico;
+    }
+    
 } // public class UserInputPanel
 
 /*---------------------------------------------------------------------------*/
