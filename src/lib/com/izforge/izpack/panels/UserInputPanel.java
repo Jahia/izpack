@@ -2244,7 +2244,7 @@ public class UserInputPanel extends IzPanel implements ActionListener, ItemListe
                     UIElement descUiElement = new UIElement();
                     JLabel label = new JLabel(getText(choiceDescr), icon, SwingConstants.LEADING);
                     LineBorder lineBoder = new LineBorder(Color.WHITE, 0);
-                    label.setBorder(BorderFactory.createCompoundBorder(lineBoder, BorderFactory.createEmptyBorder(0,20,0,0)));
+                    label.setBorder(BorderFactory.createCompoundBorder(lineBoder, BorderFactory.createEmptyBorder(0,22,0,0)));
                     label.addMouseListener(new MouseListener() {
                         public void mouseReleased(MouseEvent e)
                         {
