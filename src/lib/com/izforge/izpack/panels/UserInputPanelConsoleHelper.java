@@ -542,6 +542,15 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
             }
             System.out.println(i + "  [" + (input.iSelectedChoice == i ? "x" : " ") + "] "
                     + (choice.strText != null ? choice.strText : ""));
+            if (choice.strDescription != null && choice.strDescription.length() > 0) {
+                System.out.print("       ");
+                String v = choice.strDescription.trim();
+                if (v.startsWith("<html>") && v.endsWith("</html>") && v.length() > ("<html>".length() + "</html>".length())) {
+                    v = v.substring("<html>".length());
+                    v = v.substring(0, v.indexOf("</html>"));
+                }
+                System.out.println(v);
+            }
         }
 
         try
@@ -789,7 +798,8 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
             String strFieldText = null;
             int selection = -1;
             IXMLElement spec = field.getFirstChildNamed(SPEC);
-            IXMLElement description = field.getFirstChildNamed(DESCRIPTION);
+            Vector<IXMLElement> childrenNamed = spec.getChildrenNamed(DESCRIPTION);
+            IXMLElement description = childrenNamed.size() > 0 ? childrenNamed.get(0) : null;
             Vector<IXMLElement> choices = null;
             if (spec != null)
             {
@@ -881,11 +891,12 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
                         }
                     }
 
-                    
-                    choicesList.add(new Choice(
-                                choice.getAttribute(TEXT), 
-                                value,
-                                set));
+                    Choice choiceOption = new Choice(choice.getAttribute(TEXT), value, set);
+                    IXMLElement choiceDescr = choice.getFirstChildNamed(DESCRIPTION);
+                    if (choiceDescr != null) {
+                        choiceOption.strDescription = choiceDescr.getAttribute(TEXT);
+                    }
+                    choicesList.add(choiceOption);
 
                     }
                 }
@@ -1177,6 +1188,8 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
         String strValue;
 
         String strSet;
+        
+        String strDescription;
     }
     
     public static class Password extends Input
