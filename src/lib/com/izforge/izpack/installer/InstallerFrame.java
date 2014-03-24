@@ -41,6 +41,7 @@ import com.izforge.izpack.util.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -1895,10 +1896,53 @@ public class InstallerFrame extends JFrame {
         headingPanel = new JPanel(new BorderLayout());
         headingPanel.add(northPanel);
         headingPanel.add(new JSeparator(), BorderLayout.SOUTH);
-
+        
+        createHeadingPanelBorder(back);
+        
         // contentPane.add(northPanel, BorderLayout.NORTH);
         contentPane.add(headingPanel, BorderLayout.NORTH);
 
+    }
+
+    private void createHeadingPanelBorder(Color back)
+    {
+        int borderSize = 0;
+        if (installdata.guiPrefs.modifier.containsKey("headingBorderSize"))
+        {
+            borderSize = Integer.parseInt(installdata.guiPrefs.modifier.get("headingBorderSize"));
+        }
+        int top = borderSize;
+        int left = borderSize;
+        int bottom = borderSize;
+        int right = borderSize;
+
+        if (installdata.guiPrefs.modifier.containsKey("headingBorderSizeTop"))
+        {
+            top = Integer.parseInt(installdata.guiPrefs.modifier.get("headingBorderSizeTop"));
+        }
+        if (installdata.guiPrefs.modifier.containsKey("headingBorderSizeLeft"))
+        {
+            left = Integer.parseInt(installdata.guiPrefs.modifier.get("headingBorderSizeLeft"));
+        }
+        if (installdata.guiPrefs.modifier.containsKey("headingBorderSizeBottom"))
+        {
+            bottom = Integer.parseInt(installdata.guiPrefs.modifier.get("headingBorderSizeBottom"));
+        }
+        if (installdata.guiPrefs.modifier.containsKey("headingBorderSizeRight"))
+        {
+            right = Integer.parseInt(installdata.guiPrefs.modifier.get("headingBorderSizeRight"));
+        }
+
+        if (top != 0 || left != 0 || bottom != 0 || right != 0)
+        {
+            Color color = back;
+            if (installdata.guiPrefs.modifier.containsKey("headingBorderColor"))
+            {
+                color = Color.decode(installdata.guiPrefs.modifier.get("headingBorderColor"));
+            }
+            headingPanel
+                    .setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, color));
+        }
     }
 
     /**
