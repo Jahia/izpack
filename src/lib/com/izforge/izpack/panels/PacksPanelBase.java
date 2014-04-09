@@ -341,7 +341,14 @@ public abstract class PacksPanelBase extends IzPanel implements PacksPanelInterf
             }
             VariableSubstitutor vs = new VariableSubstitutor(idata.getVariables());
             desc = vs.substitute(desc, null);
-            descriptionArea.setText(desc);
+            final String myDesc = desc;
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run()
+                {
+                    descriptionArea.setText(myDesc);
+                }
+            });
         }
         // Operation for the dependency listing
         if ((dependencyArea != null) && (selectedRow != -1))
