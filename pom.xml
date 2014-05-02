@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <artifactId>izpack-standalone-compiler</artifactId>
-  <version>4.3.5-jahia10</version>
+  <version>4.3.5-jahia11-SNAPSHOT</version>
   
   <name>IzPack Standalone Compiler</name>
 
