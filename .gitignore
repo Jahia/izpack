@@ -1,3 +1,9 @@
 /_build
 /_dist
 /eclipse-bin
+/.settings
+/bin/native/3rdparty/COIOSHelper.dll
+/bin/native/3rdparty/COIOSHelper_x64.dll
+/bin/native/izpack/ShellLink.dll
+/bin/native/izpack/ShellLink_x64.dll
+/.project
