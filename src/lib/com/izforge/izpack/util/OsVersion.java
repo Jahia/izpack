@@ -146,6 +146,16 @@ public final class OsVersion implements OsVersionConstants, StringConstants
     public static final boolean IS_WINDOWS_8 = IS_WINDOWS && OS_VERSION.equals(WINDOWS_8_VERSION);
 
     /**
+     * True if this is Windows 8.1
+     */
+    public static final boolean IS_WINDOWS_81 = IS_WINDOWS && OS_VERSION.equals(WINDOWS_81_VERSION);
+
+    /**
+     * True if this is Windows version that requires Administrator access
+     */
+    public static final boolean IS_WINDOWS_ADMIN_REQUIRED = IS_WINDOWS && (IS_WINDOWS_VISTA || IS_WINDOWS_7 || IS_WINDOWS_8 || IS_WINDOWS_81);
+
+    /**
      * True if this is some variant of Unix (OSX, Linux, Solaris, FreeBSD, etc).
      */
     public static final boolean IS_UNIX = !IS_OS2 && !IS_WINDOWS;

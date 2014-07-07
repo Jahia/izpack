@@ -74,6 +74,8 @@ public class RulesEngine implements Serializable
         createBuiltinOsCondition("IS_WINDOWS_VISTA", "izpack.windowsinstall.vista");
         createBuiltinOsCondition("IS_WINDOWS_7", "izpack.windowsinstall.7");
         createBuiltinOsCondition("IS_WINDOWS_8", "izpack.windowsinstall.8");
+        createBuiltinOsCondition("IS_WINDOWS_81", "izpack.windowsinstall.81");
+        createBuiltinOsCondition("IS_WINDOWS_ADMIN_REQUIRED", "izpack.windowsinstall.admin.required");
         createBuiltinOsCondition("IS_LINUX", "izpack.linuxinstall");
         createBuiltinOsCondition("IS_SUNOS", "izpack.solarisinstall");
         createBuiltinOsCondition("IS_MAC", "izpack.macinstall");
