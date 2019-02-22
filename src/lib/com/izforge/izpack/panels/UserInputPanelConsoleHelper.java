@@ -23,6 +23,7 @@ package com.izforge.izpack.panels;
 import static com.izforge.izpack.panels.UserInputPanel.*;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -393,7 +394,7 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
             while (true)
             {
                 boolean done = true;
-                rtn = processTextField(pwd.input[i], idata);
+                rtn = processTextField(pwd.input[i], idata, true);
                 if (!rtn) return rtn;
                 values.add(idata.getVariable(pwd.input[i].strVariableName));
                 if (i > 0 && pwd.validators != null && !pwd.validators.isEmpty())
@@ -420,6 +421,11 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
     }
 
     boolean processTextField(Input input, AutomatedInstallData idata)
+    {
+        return processTextField(input, idata, false);
+    }
+
+    boolean processTextField(Input input, AutomatedInstallData idata, boolean hideInput)
     {
         String variable = input.strVariableName;
         String set;
@@ -452,11 +458,10 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
         String value = set;
         while (true) {
             boolean done = true;
-            System.out.println(fieldText + " [" + set + "] ");
+            System.out.println(fieldText + " [" + (hideInput ? mask(set) : set) + "] ");
             try
             {
-                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                String strIn = br.readLine();
+                String strIn = readUserInput(hideInput);
                 value = !strIn.trim().equals("") ? strIn : set;
                 if (input.validators != null && !input.validators.isEmpty())
                 {
@@ -484,6 +489,26 @@ public class UserInputPanelConsoleHelper extends PanelConsoleHelper implements P
         
         return true;
 
+    }
+
+    private String mask(String value)
+    {
+        return value != null && value.length() > 0 ? value.replaceAll(".", "*") : value;
+    }
+
+    private String readUserInput(boolean hideInput) throws IOException
+    {
+        String strIn = null;
+        Console console = hideInput ? System.console() : null;
+        if (console != null) {
+            char[] pwd = console.readPassword();
+            strIn = pwd != null ? String.valueOf(pwd) : null;
+        } else {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            strIn = br.readLine();
+        }
+
+        return strIn;
     }
 
     boolean processComboRadioField(Input input, AutomatedInstallData idata)
