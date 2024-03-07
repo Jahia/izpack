@@ -462,7 +462,7 @@ public class SelfModifier
         List<String> command = new ArrayList<String>();
         command.add(javaCommand);
         command.add("-Xmx" + this.maxmemory + "m");
-        command.add("-XX:MaxPermSize=" + maxpermgensize + "m");
+        // command.add("-XX:MaxPermSize=" + maxpermgensize + "m"); // invalid for jvm 17; remove
 // activate for debugging purposes.        
 //        command.add("-Xdebug");        
 //        int debugPort = 8000 + nextPhase;        
