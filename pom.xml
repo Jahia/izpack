@@ -49,7 +49,7 @@
              <phase>package</phase>
              <configuration>
                <tasks>
-                  <exec executable="${env.ANT_HOME}/bin/ant${antExeExt}" dir="${basedir}/src"/>
+                  <exec executable="${env.ANT_EXE}" dir="${basedir}/src"/>
                </tasks>
              </configuration>
            </execution>
@@ -62,7 +62,7 @@
              <phase>pre-clean</phase>
              <configuration>
                <tasks>
-                  <exec executable="${env.ANT_HOME}/bin/ant${antExeExt}" dir="${basedir}/src">
+                  <exec executable="${env.ANT_EXE}" dir="${basedir}/src">
                     <arg value="clean"/>
                   </exec>
                </tasks>
@@ -106,22 +106,4 @@
      </plugins>
      
   </build>
-  
-  <profiles>
-    <profile>
-      <id>windows</id>
-      <activation>
-        <os>
-          <family>Windows</family>
-        </os>
-      </activation>
-      <properties>
-        <antExeExt>.bat</antExeExt>
-      </properties>
-    </profile>
-  </profiles>
-
-  <properties>
-    <antExeExt></antExeExt>
-  </properties>
 </project>
