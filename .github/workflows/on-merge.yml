@@ -51,18 +51,25 @@ jobs:
       - name: Deploy with Maven
         shell: bash
         run: >-
-          mvn -s .github/maven.settings.xml -B
+          mvn -s .github/maven.settings.xml -ntp -B
           -Dmaven.javadoc.skip=true -Dgpg.skip=true
-          --file pom.xml clean deploy | tee mvn.log
+          --file pom.xml clean deploy
 
       - name: Report where the artifact landed
         shell: bash
         run: |
           set -euo pipefail
-          url="$(grep --text -E '^\[INFO\] Uploaded' mvn.log \
-            | grep -Eo 'https://[^ ]*\.jar' | grep -v -- '-sources' | tail -n1 || true)"
-          if [[ -n "$url" ]]; then
-            echo "::notice title=Snapshot published::$url"
-          else
-            echo "::warning title=Snapshot location unknown::No upload line was found in the Maven log."
-          fi
+          # actions/setup-java sets MAVEN_ARGS=-ntp, which hides every transfer line, so the
+          # location is read from the project rather than from the Maven log.
+          ev() {
+            mvn -q -B -N -s .github/maven.settings.xml --file pom.xml \
+              help:evaluate -Dexpression="$1" -DforceStdout
+          }
+          version="$(ev project.version)"
+          case "$version" in
+            *-SNAPSHOT) repository="$(ev project.distributionManagement.snapshotRepository.url)" ;;
+            *)          repository="$(ev project.distributionManagement.repository.url)" ;;
+          esac
+          group="$(ev project.groupId | tr '.' '/')"
+          artifact="$(ev project.artifactId)"
+          echo "::notice title=Snapshot published::${repository%/}/$group/$artifact/$version/"
