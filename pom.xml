@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <artifactId>izpack-standalone-compiler</artifactId>
-  <version>4.3.5-jahia12</version>
+  <version>4.3.5-jahia13-SNAPSHOT</version>
   
   <name>IzPack Standalone Compiler</name>
 
@@ -21,7 +21,26 @@
   <packaging>pom</packaging>  
   
 
+  <!-- izpack-parent 2 points at svn.codehaus.org, which no longer exists. -->
+  <scm>
+    <connection>scm:git:https://github.com/Jahia/izpack.git</connection>
+    <developerConnection>scm:git:git@github.com:Jahia/izpack.git</developerConnection>
+    <url>https://github.com/Jahia/izpack</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <!-- izpack-parent 2 deploys over dav: to dav.codehaus.org, which no longer exists. -->
   <distributionManagement>
+    <repository>
+      <id>thirdparty-releases</id>
+      <name>Jahia Third-party Releases</name>
+      <url>https://devtools.jahia.com/nexus/content/repositories/thirdparty-releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>thirdparty-snapshots</id>
+      <name>Jahia Third-party Snapshots</name>
+      <url>https://devtools.jahia.com/nexus/content/repositories/thirdparty-snapshots</url>
+    </snapshotRepository>
     <site>
       <id>codehaus.org</id>
       <name>IzPack Website</name>
@@ -36,7 +55,19 @@
     <sourceDirectory>src/lib</sourceDirectory>
     
      <plugins>
-     
+
+      <!-- izpack-parent 2 pins 2.0-beta-7, which predates git support and whose tagBase is an
+           svn.codehaus.org path. -->
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.1.1</version>
+        <configuration>
+          <tagBase combine.self="override"/>
+          <tagNameFormat>@{project.version}</tagNameFormat>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+        </configuration>
+      </plugin>
+
       <!-- copy the real standlone-compiler to this project and overwrite the implicit jar already built by the jar packaging -->
       <plugin>
          <artifactId>maven-antrun-plugin</artifactId>

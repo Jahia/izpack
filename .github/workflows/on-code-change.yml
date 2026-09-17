@@ -1,0 +1,52 @@
+# Build IzPack on every pull request. This workflow publishes nothing.
+name: On Code Change (PR)
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set environment variables from parameters
+        shell: bash
+        run: |
+          echo "NEXUS_USERNAME=${{ secrets.NEXUS_USERNAME }}" >> "$GITHUB_ENV"
+          echo "NEXUS_PASSWORD=${{ secrets.NEXUS_PASSWORD }}" >> "$GITHUB_ENV"
+
+      # The Ant build compiles with source and target 1.6, which JDK 11 refuses.
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: '8'
+          distribution: temurin
+          cache: maven
+
+      # maven-antrun-plugin runs the Ant build through ${env.ANT_EXE}.
+      - name: Locate Ant
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v ant >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ant
+          fi
+          echo "ANT_EXE=$(command -v ant)" >> "$GITHUB_ENV"
+
+      - name: Build with Maven
+        shell: bash
+        run: >-
+          mvn -s .github/maven.settings.xml -ntp -B
+          -Dmaven.javadoc.skip=true -Dgpg.skip=true
+          --file pom.xml install
